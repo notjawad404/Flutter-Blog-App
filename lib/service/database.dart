@@ -1,30 +1,32 @@
 import 'dart:convert';
+import 'package:flutter_blog_app/models/postsModel.dart';
 import 'package:http/http.dart' as http;
 
-class ApiService {
-  static const String baseUrl = 'http://localhost:5000/posts';
+class PostService {
+  final String baseUrl = 'http://localhost:5000';
 
-  Future<String> getHello() async {
-    final response = await http.get(Uri.parse('$baseUrl/hello'));
+  Future<Post> createPost(Post post) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/posts'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(post.toJson()),
+    );
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body)['message'];
+    if (response.statusCode == 201) {
+      return Post.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Failed to load message');
+      throw Exception('Failed to create post');
     }
   }
 
-  Future<Map<String, dynamic>> postData(Map<String, dynamic> data) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/data'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(data),
-    );
+  Future<List<Post>> fetchPosts() async {
+    final response = await http.get(Uri.parse('$baseUrl/posts'));
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      List jsonResponse = jsonDecode(response.body);
+      return jsonResponse.map((post) => Post.fromJson(post)).toList();
     } else {
-      throw Exception('Failed to post data');
+      throw Exception('Failed to load posts');
     }
   }
 }

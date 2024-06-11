@@ -1,41 +1,39 @@
+
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_app/controller/postsController.dart';
+import 'package:flutter_blog_app/view/add_posts_screen.dart';
+import 'package:get/get.dart';
 
-class HomePage extends StatelessWidget {
-  final TextEditingController _textcontroller = TextEditingController();
-  
-  HomePage({super.key});
-
-  void sendMessage(String message) {
-    print(message);
-    _textcontroller.clear();
-  }
-
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final PostController postController = Get.find();
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter Todo App'),
+        title: Text('Notepad App1'),
+        actions: [
+          ElevatedButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AddPostScreen()));
+          }, child: Text('Add Post'))
+        ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Welcome to Flutter Todo App',
-            ),
-            ElevatedButton(onPressed: () {
-              if (_textcontroller.text.isNotEmpty) {
-                sendMessage(_textcontroller.text);
-              }
-              else {
-                print('Please enter a message');
-              }
-
-            }, child: Text('Click Me')),
-          ],
-        
-      ),
-      ),
+      body: Obx(() {
+        if (postController.isLoading.value) {
+          return Center(child: CircularProgressIndicator());
+        } else {
+          return ListView.builder(
+            itemCount: postController.posts.length,
+            itemBuilder: (context, index) {
+              final post = postController.posts[index];
+              return ListTile(
+                title: Text(post.title),
+                subtitle: Text(post.content),
+              );
+            },
+          );
+        }
+      }),
     );
   }
 }
