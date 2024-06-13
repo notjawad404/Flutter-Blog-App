@@ -1,53 +1,37 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'dart:convert';
 
 class AuthService {
-  final String baseUrl = 'http://localhost:5000';
+  static const String baseUrl = 'http://localhost:5000';
 
-  Future<String> signUp(String username, String password) async {
+  static Future<Map<String, dynamic>> registerUser(String username, String email, String password) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/signup'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'username': username, 'password': password}),
+      Uri.parse('$baseUrl/register'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'username': username,
+        'email': email,
+        'password': password,
+      }),
     );
 
-    if (response.statusCode == 201) {
-      final data = jsonDecode(response.body);
-      return data['token'];
-    } else {
-      throw Exception('Failed to sign up');
-    }
+    return jsonDecode(response.body);
   }
 
-  Future<String> login(String username, String password) async {
+  static Future<Map<String, dynamic>> loginUser(String email, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/login'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'username': username, 'password': password}),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': email,
+        'password': password,
+      }),
     );
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return data['token'];
-    } else {
-      throw Exception('Failed to login');
-    }
-  }
-
-  Future<void> saveToken(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('token', token);
-  }
-
-  Future<String?> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token');
-  }
-
-  Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove('token');
+    return jsonDecode(response.body);
   }
 }
