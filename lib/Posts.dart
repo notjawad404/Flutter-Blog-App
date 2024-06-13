@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_app/controller/postsController.dart';
 import 'package:flutter_blog_app/view/add_posts_screen.dart';
@@ -27,8 +26,18 @@ class HomeScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final post = postController.posts[index];
               return ListTile(
-                title: Text(post.title),
-                subtitle: Text(post.content),
+                title: Text('${post.username}: ${post.title}'),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(post.content),
+                    const SizedBox(height: 5),
+                    Text(
+                      'Date: ${post.date}',
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ],
+                ),
               );
             },
           );

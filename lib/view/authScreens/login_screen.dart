@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_app/Posts.dart';
 import 'package:flutter_blog_app/controller/auth_controller.dart';
+import 'package:flutter_blog_app/controller/postsController.dart';
+import 'package:flutter_blog_app/service/database.dart';
 import 'package:get/get.dart';
 
 class LoginView extends StatelessWidget {
@@ -36,7 +38,9 @@ class LoginView extends StatelessWidget {
                       emailController.text,
                       passwordController.text,
                     );
+                     final postService = PostService();
 
+                    Get.put(PostController(postService));
                     Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
                   },
                   child: const Text('Login'),
