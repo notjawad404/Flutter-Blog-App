@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_app/view/authScreens/login_screen.dart';
 import 'package:flutter_blog_app/view/authScreens/signup_screen.dart';
 import 'package:get/get.dart';
 
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: RegisterView(),
+      home: LoginScreen(),
      
     );
   }

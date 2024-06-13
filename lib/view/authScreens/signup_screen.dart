@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blog_app/Posts.dart';
 import 'package:flutter_blog_app/controller/auth_controller.dart';
 import 'package:flutter_blog_app/controller/postsController.dart';
 import 'package:flutter_blog_app/service/database.dart';
 import 'package:flutter_blog_app/view/authScreens/login_screen.dart';
+import 'package:flutter_blog_app/view/home.dart';
 import 'package:get/get.dart';
 
-class RegisterView extends StatelessWidget {
+class RegisterScreen extends StatelessWidget {
   final AuthController authController = Get.put(AuthController());
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -59,7 +59,7 @@ class RegisterView extends StatelessWidget {
             ElevatedButton(
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => LoginView()));
+                      MaterialPageRoute(builder: (context) => LoginScreen()));
                 },
                 child: const Text('Already have an account? Login here')),
             Obx(() {

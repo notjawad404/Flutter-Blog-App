@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blog_app/Posts.dart';
 import 'package:flutter_blog_app/controller/auth_controller.dart';
 import 'package:flutter_blog_app/controller/postsController.dart';
 import 'package:flutter_blog_app/service/database.dart';
+import 'package:flutter_blog_app/view/home.dart';
 import 'package:get/get.dart';
 
-class LoginView extends StatelessWidget {
+class LoginScreen extends StatelessWidget {
   final AuthController authController = Get.put(AuthController());
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();

@@ -29,4 +29,23 @@ class PostService {
       throw Exception('Failed to load posts');
     }
   }
+
+  // Search for a post by title
+
+   Future<List<Post>> searchPost(String title) async {
+    final response = await http.get(Uri.parse('$baseUrl/posts/search/$title'));
+
+    if (response.statusCode == 200) {
+    // Assuming server returns a JSON object with a 'posts' key containing an array
+    Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+    if (jsonResponse.containsKey('posts')) {
+      List posts = jsonResponse['posts'];
+      return posts.map((post) => Post.fromJson(post)).toList();
+    } else {
+      throw Exception('Invalid response format');
+    }
+  } else {
+    throw Exception('Failed to load posts');
+  }
+  }
 }

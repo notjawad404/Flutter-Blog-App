@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_app/controller/postsController.dart';
 import 'package:flutter_blog_app/view/add_posts_screen.dart';
+import 'package:flutter_blog_app/view/search_posts_screen.dart';
 import 'package:get/get.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -14,7 +15,10 @@ class HomeScreen extends StatelessWidget {
         actions: [
           ElevatedButton(onPressed: (){
             Navigator.push(context, MaterialPageRoute(builder: (context) => AddPostScreen()));
-          }, child: const Text('Add Post'))
+          }, child: const Text('Add Post')),
+          ElevatedButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPostsScreen()));
+          }, child: const Text('Search Post')),
         ],
       ),
       body: Obx(() {
