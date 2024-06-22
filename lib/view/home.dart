@@ -6,75 +6,89 @@ import 'package:get/get.dart';
 
 class HomeScreen extends StatelessWidget {
   final PostController postController = Get.put(PostController(PostService()));
+  final TextEditingController searchController = TextEditingController();
 
-  HomeScreen({super.key});
+  HomeScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    final PostController postController = Get.find();
-    TextEditingController searchController = TextEditingController();
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search the Posts'),
+        title: const Center(child: Text('Blog App')),
         actions: [
-          ElevatedButton(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: ElevatedButton(
               onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => AddPostScreen()));
               },
-              child: const Text('Add Post')),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Colors.blue,
+              ),
+              child: const Text('Add Post'),
+            ),
+          ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
               controller: searchController,
               decoration: InputDecoration(
-                labelText: 'Enter post title',
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                labelText: 'Search by post title',
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: () {
                     postController.searchPost(searchController.text);
                   },
                 ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
               ),
             ),
             const SizedBox(height: 20),
-            Obx(() {
-              if (postController.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
-              }
+            Expanded(
+              child: Obx(() {
+                if (postController.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-              if (postController.posts.isEmpty) {
-                return const Center(child: Text('No posts found.'));
-              }
+                if (postController.posts.isEmpty) {
+                  return const Center(child: Text('No posts found.'));
+                }
 
-              return Expanded(
-                child: ListView.builder(
+                return ListView.builder(
                   itemCount: postController.posts.length,
                   itemBuilder: (context, index) {
                     final post = postController.posts[index];
-                    return ListTile(
-                      title: Text('${post.username}: ${post.title}'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(post.content),
-                          const SizedBox(height: 5),
-                          Text(
-                            'Date: ${post.date}',
-                            style: const TextStyle(
-                                fontSize: 12, color: Colors.grey),
-                          ),
-                        ],
+                    return Card(
+                      elevation: 2,
+                      margin: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: ListTile(
+                        title: Text('${post.username}: ${post.title}'),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(post.content),
+                            const SizedBox(height: 5),
+                            Text(
+                              'Date: ${post.date}',
+                              style: const TextStyle(fontSize: 12, color: Colors.grey),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
-                ),
-              );
-            }),
+                );
+              }),
+            ),
           ],
         ),
       ),

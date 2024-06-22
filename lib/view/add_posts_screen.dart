@@ -10,7 +10,7 @@ class AddPostScreen extends StatelessWidget {
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
 
-  AddPostScreen({super.key});
+  AddPostScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +51,17 @@ class AddPostScreen extends StatelessWidget {
                 child: Form(
                   key: _formKey,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       TextFormField(
                         controller: _titleController,
-                        decoration: const InputDecoration(labelText: 'Title'),
+                        decoration: InputDecoration(
+                          labelText: 'Title',
+                          contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Please enter a title';
@@ -62,9 +69,16 @@ class AddPostScreen extends StatelessWidget {
                           return null;
                         },
                       ),
+                      const SizedBox(height: 12.0),
                       TextFormField(
                         controller: _contentController,
-                        decoration: const InputDecoration(labelText: 'Content'),
+                        decoration: InputDecoration(
+                          labelText: 'Content',
+                          contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Please enter some content';
@@ -76,9 +90,6 @@ class AddPostScreen extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            if (kDebugMode) {
-                              print(username);
-                            }
                             if (username != null) {
                               Post newPost = Post(
                                 username: username,
@@ -90,14 +101,24 @@ class AddPostScreen extends StatelessWidget {
                               postController.addPost(newPost);
                               Get.back();
                             } else {
-                              if (kDebugMode) {
-                                print('Username not found');
-                              }
-                              Get.snackbar("Username not found",
-                                  "make sure you are login first");
+                              Get.snackbar(
+                                "Username not found",
+                                "Make sure you are logged in first",
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                                margin: const EdgeInsets.all(16.0),
+                                borderRadius: 10.0,
+                              );
                             }
                           }
                         },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
                         child: const Text('Add Post'),
                       ),
                     ],
