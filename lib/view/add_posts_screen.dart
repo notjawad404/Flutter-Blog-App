@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_app/controller/postsController.dart';
 import 'package:get/get.dart';
@@ -23,7 +24,7 @@ class AddPostScreen extends StatelessWidget {
             appBar: AppBar(
               title: const Text('Add Post'),
             ),
-            body: Center(
+            body: const Center(
               child: CircularProgressIndicator(),
             ),
           );
@@ -75,7 +76,9 @@ class AddPostScreen extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            print(username);
+                            if (kDebugMode) {
+                              print(username);
+                            }
                             if (username != null) {
                               Post newPost = Post(
                                 username: username,
@@ -87,7 +90,9 @@ class AddPostScreen extends StatelessWidget {
                               postController.addPost(newPost);
                               Get.back();
                             } else {
-                              print('Username not found');
+                              if (kDebugMode) {
+                                print('Username not found');
+                              }
                               Get.snackbar("Username not found",
                                   "make sure you are login first");
                             }

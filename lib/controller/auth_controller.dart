@@ -29,6 +29,8 @@ class AuthController extends GetxController {
     try {
       var response = await AuthService.loginUser(email, password);
       if (response['message'] == 'Login successful') {
+        Get.snackbar('Success', 'Login successful',
+            snackPosition: SnackPosition.BOTTOM);
         await _storeUsername(response['username']);
         isAuthenticated(true);
       } else {
@@ -57,17 +59,21 @@ class AuthController extends GetxController {
   Future<void> _storeUsername(String username) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('username', username);
+    print('Username stored: $username'); // Debugging line
   }
 
   Future<void> _clearLocalStorage() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('jwtToken');
     await prefs.remove('username');
+    print('Local storage cleared'); // Debugging line
   }
 
   Future<String?> getUsername() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('username');
+    String? username = prefs.getString('username');
+    print('Retrieved username: $username'); // Debugging line
+    return username;
   }
 
   Future<void> checkAuthStatus() async {

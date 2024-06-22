@@ -35,17 +35,13 @@ class PostController extends GetxController {
     }
   }
 
-
   // Search for a post by title
- void searchPost(String title) async {
+  void searchPost(String title) async {
     try {
       isLoading(true);
       var searchedPosts = await postService.searchPost(title);
-      print(searchedPosts);
       posts.assignAll(searchedPosts);
-      print(posts);
     } catch (e) {
-      print(e.toString());
       Get.snackbar('Error', 'Failed to search the posts: ${e.toString()}');
     } finally {
       isLoading(false);
