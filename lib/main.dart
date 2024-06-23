@@ -5,10 +5,12 @@ import 'package:flutter_blog_app/view/authScreens/login_screen.dart';
 import 'package:flutter_blog_app/view/home.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,26 +18,29 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: AuthCheck(),
+      debugShowCheckedModeBanner: false,
+      home: const AuthCheck(),
     );
   }
 }
 
 class AuthCheck extends StatelessWidget {
+  const AuthCheck({super.key});
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: AuthService.getToken(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
+          return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
             ),
           );
         } else {
           if (snapshot.data != null) {
-            return HomeScreen();
+            return const HomeScreen();
           } else {
             return LoginScreen();
           }

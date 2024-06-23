@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserPosts extends StatefulWidget {
+  const UserPosts({Key? key}) : super(key: key);
+
   @override
   _UserPostsState createState() => _UserPostsState();
 }
@@ -82,7 +85,9 @@ class _UserPostsState extends State<UserPosts> {
         throw Exception('Failed to update post');
       }
     } catch (error) {
-      print('Error updating post: $error');
+      if (kDebugMode) {
+        print('Error updating post: $error');
+      }
     }
   }
 
@@ -94,6 +99,7 @@ class _UserPostsState extends State<UserPosts> {
       if (response.statusCode == 200) {
         setState(() {
           posts = posts.where((post) => post['_id'] != postId).toList();
+          filteredPosts = filteredPosts.where((post) => post['_id'] != postId).toList();
         });
       } else {
         throw Exception('Failed to delete post');
@@ -210,3 +216,4 @@ class _UserPostsState extends State<UserPosts> {
     );
   }
 }
+

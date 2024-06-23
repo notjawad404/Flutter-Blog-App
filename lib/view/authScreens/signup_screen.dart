@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_app/controller/auth_controller.dart';
-import 'package:flutter_blog_app/controller/postsController.dart';
-import 'package:flutter_blog_app/service/database.dart';
+
 import 'package:flutter_blog_app/view/authScreens/login_screen.dart';
 import 'package:flutter_blog_app/view/home.dart';
 import 'package:get/get.dart';
@@ -70,8 +69,6 @@ class RegisterScreen extends StatelessWidget {
                       passwordController.text,
                     );
 
-                    final postService = PostService();
-                    Get.put(PostController(postService));
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => HomeScreen()));
                   },

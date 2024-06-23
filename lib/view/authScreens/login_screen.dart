@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_app/controller/auth_controller.dart';
-import 'package:flutter_blog_app/controller/postsController.dart';
-import 'package:flutter_blog_app/service/database.dart';
 import 'package:flutter_blog_app/view/authScreens/signup_screen.dart';
 import 'package:flutter_blog_app/view/home.dart';
 import 'package:get/get.dart';
@@ -56,8 +54,7 @@ class LoginScreen extends StatelessWidget {
                       emailController.text,
                       passwordController.text,
                     );
-                    final postService = PostService();
-                    Get.put(PostController(postService));
+                    
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
                   },
                   style: ElevatedButton.styleFrom(

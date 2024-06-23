@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_app/view/home.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -46,7 +49,7 @@ class _AddPostState extends State<AddPostScreen> {
         );
 
         if (response.statusCode == 201) {
-          Navigator.pop(context);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
         } else {
           throw Exception('Failed to add post');
         }
@@ -65,16 +68,16 @@ class _AddPostState extends State<AddPostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Post'),
+        title: const Text('Add Post'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             children: <Widget>[
               TextFormField(
-                decoration: InputDecoration(labelText: 'Title'),
+                decoration: const InputDecoration(labelText: 'Title'),
                 onSaved: (value) => title = value!,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -83,9 +86,9 @@ class _AddPostState extends State<AddPostScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Content'),
+                decoration: const InputDecoration(labelText: 'Content'),
                 onSaved: (value) => content = value!,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -95,10 +98,10 @@ class _AddPostState extends State<AddPostScreen> {
                 },
                 maxLines: 4,
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _addPost,
-                child: Text('Add Post'),
+                child: const Text('Add Post'),
               ),
             ],
           ),

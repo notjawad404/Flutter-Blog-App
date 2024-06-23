@@ -1,9 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_app/view/add_posts_screen.dart';
+import 'package:flutter_blog_app/view/authScreens/login_screen.dart';
 import 'package:flutter_blog_app/view/user_posts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -51,6 +56,16 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+    void logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear(); // Clear all stored preferences
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,13 +75,16 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
-               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AddPostScreen()));
+               Navigator.push(context, MaterialPageRoute(builder: (context) => AddPostScreen()));
             },
           ),
-          ElevatedButton( onPressed: (){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UserPosts()));
-          
+          ElevatedButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => UserPosts()));
           }, child: const Text('My Posts')),
+          IconButton(onPressed: (){
+            logout();
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+          }, icon: const Icon(Icons.logout)),
         ],
       ),
       body: Padding(
