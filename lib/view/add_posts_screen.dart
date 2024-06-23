@@ -1,134 +1,109 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blog_app/controller/postsController.dart';
-import 'package:get/get.dart';
-import 'package:flutter_blog_app/models/postsModel.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
-class AddPostScreen extends StatelessWidget {
+class AddPostScreen extends StatefulWidget {
+  @override
+  _AddPostState createState() => _AddPostState();
+}
+
+class _AddPostState extends State<AddPostScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _titleController = TextEditingController();
-  final _contentController = TextEditingController();
+  String title = '';
+  String content = '';
+  String username = '';
 
-  AddPostScreen({Key? key}) : super(key: key);
+  @override
+  void initState() {
+    super.initState();
+    _loadUsername();
+  }
+
+  _loadUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      username = prefs.getString('username') ?? '';
+    });
+  }
+
+  _addPost() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      try {
+        final response = await http.post(
+          Uri.parse('http://localhost:5000/posts'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            'username': username,
+            'title': title,
+            'content': content,
+          }),
+        );
+
+        if (response.statusCode == 201) {
+          Navigator.pop(context);
+        } else {
+          throw Exception('Failed to add post');
+        }
+      } catch (error) {
+        if (kDebugMode) {
+          print('Error adding post: $error');
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error adding post: $error')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final PostController postController = Get.find();
-
-    return FutureBuilder<SharedPreferences>(
-      future: SharedPreferences.getInstance(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Add Post'),
-            ),
-            body: const Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        } else {
-          if (snapshot.hasError) {
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Add Post'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Add Post'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Title'),
+                onSaved: (value) => title = value!,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a title';
+                  }
+                  return null;
+                },
               ),
-              body: Center(
-                child: Text('Error: ${snapshot.error}'),
+              SizedBox(height: 16.0),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Content'),
+                onSaved: (value) => content = value!,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter content';
+                  }
+                  return null;
+                },
+                maxLines: 4,
               ),
-            );
-          } else {
-            SharedPreferences prefs = snapshot.data!;
-            String? username = prefs.getString('username');
-
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Add Post'),
+              SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _addPost,
+                child: Text('Add Post'),
               ),
-              body: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      TextFormField(
-                        controller: _titleController,
-                        decoration: InputDecoration(
-                          labelText: 'Title',
-                          contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter a title';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 12.0),
-                      TextFormField(
-                        controller: _contentController,
-                        decoration: InputDecoration(
-                          labelText: 'Content',
-                          contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter some content';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            if (username != null) {
-                              Post newPost = Post(
-                                username: username,
-                                title: _titleController.text,
-                                content: _contentController.text,
-                                date: DateTime.now(),
-                                id: '',
-                              );
-                              postController.addPost(newPost);
-                              Get.back();
-                            } else {
-                              Get.snackbar(
-                                "Username not found",
-                                "Make sure you are logged in first",
-                                snackPosition: SnackPosition.BOTTOM,
-                                backgroundColor: Colors.red,
-                                colorText: Colors.white,
-                                margin: const EdgeInsets.all(16.0),
-                                borderRadius: 10.0,
-                              );
-                            }
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        child: const Text('Add Post'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }
-        }
-      },
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
