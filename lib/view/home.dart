@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_app/view/add_posts_screen.dart';
 import 'package:flutter_blog_app/view/authScreens/login_screen.dart';
+import 'package:flutter_blog_app/view/postDetail_screen.dart';
 import 'package:flutter_blog_app/view/user_posts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -50,13 +51,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void filterPosts(String title) {
     setState(() {
       filteredPosts = posts
-          .where((post) =>
-              post['title'].toString().toLowerCase().contains(title.toLowerCase()))
+          .where((post) => post['title']
+              .toString()
+              .toLowerCase()
+              .contains(title.toLowerCase()))
           .toList();
     });
   }
 
-    void logout() async {
+  void logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear(); // Clear all stored preferences
 
@@ -75,16 +78,25 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
-               Navigator.push(context, MaterialPageRoute(builder: (context) => AddPostScreen()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AddPostScreen()));
             },
           ),
-          ElevatedButton(onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => UserPosts()));
-          }, child: const Text('My Posts')),
-          IconButton(onPressed: (){
-            logout();
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
-          }, icon: const Icon(Icons.logout)),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => UserPosts()));
+            },
+            child: const Text('My Posts'),
+          ),
+          IconButton(
+            onPressed: () {
+              logout();
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()));
+            },
+            icon: const Icon(Icons.logout),
+          ),
         ],
       ),
       body: Padding(
@@ -120,6 +132,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           Text('By: ${post['username']}'),
                         ],
                       ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                PostDetailScreen(postId: post['_id']),
+                          ),
+                        );
+                      },
                     ),
                   );
                 },
